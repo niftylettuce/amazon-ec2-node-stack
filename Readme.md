@@ -18,11 +18,11 @@
 
 3. Click "Launch Instance" at the [AWS console](https://console.aws.amazon.com/ec2/home#s=Instances).
 
-    * Launch a new "micro" instance from "Quick Start" with 64-bit "Ubuntu Server 12.04.1 LTS".
-    * Continue through using the defaults until you reach the "Create Key Pair" step.
-    * Select the radio button for "Choose from your existing Key Pairs".
-    * From the dropdown menu, you should be able to select the SSH public key you uploaded in step #2.
-    * Continue through defaults and launch your instance.
+        * Launch a new "micro" instance from "Quick Start" with 64-bit "Ubuntu Server 12.04.1 LTS".
+        * Continue through using the defaults until you reach the "Create Key Pair" step.
+        * Select the radio button for "Choose from your existing Key Pairs".
+        * From the dropdown menu, you should be able to select the SSH public key you uploaded in step #2.
+        * Continue through defaults and launch your instance.
 
 4. Copy the instance's "Public DNS" ("hostname") to your clipboard.
 
@@ -97,7 +97,7 @@
 2. Change the port for SSH and disable remote root login:
 
     ```bash
-    sudo nano /etc/ssh/sshd_config
+    sudo vim /etc/ssh/sshd_config
     ```
 
     > Edit "sshd_config" with the following changes:
@@ -127,7 +127,7 @@
     ```bash
     sudo apt-get install fail2ban
     sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
-    sudo nano /etc/fail2ban/jail.local
+    sudo vim /etc/fail2ban/jail.local
     ```
 
     > Edit "jail.local" with the following changes:
@@ -161,11 +161,42 @@
     sudo service fail2ban restart
     ```
 
-3. Log in to the EC2 Security Group management <https://console.aws.amazon.com/ec2/home#s=SecurityGroups>
+4. Log in to the EC2 Security Group management <https://console.aws.amazon.com/ec2/home#s=SecurityGroups>
 
-4. Remove inbound port 22 and enable port 44444 for your server's security group.
+5. Remove inbound port 22 and enable port 44444 for your server's security group.
 
     > This will serve as our new SSH port (feel free to change port number above/throughout these steps).
+
+6. Enable automatic security updates.
+
+    ```bash
+    sudo apt-get install unattended-upgrades
+    sudo vim /etc/apt/apt.conf.d/10periodic
+    ```
+
+    Edit "/etc/apt/apt.conf.d/10periodic":
+
+    ```diff
+    APT::Periodic::Update-Package-Lists "1";
+    +APT::Periodic::Download-Upgradeable-Packages "1";
+    -APT::Periodic::Download-Upgradeable-Packages "0";
+    +APT::Periodic::AutocleanInterval "7";
+    -APT::Periodic::AutocleanInterval "0";
+    +APT::Periodic::Unattended-Upgrade "1";
+    ```
+
+7. Install and configure logwatch to email you the daily logs:
+
+    ```bash
+    sudo apt-get install logwatch
+    sudo vim /etc/cron.daily/00logwatch
+    ```
+
+    ```diff
+    #execute
+    +/usr/sbin/logwatch --output mail --mailto your@email.com --detail high
+    -/usr/sbin/logwatch --output mail
+    ```
 
 
 ## Node.js with HTTP Proxy Configuration
@@ -197,7 +228,7 @@
     > Create a new file `/etc/init/cluster`
 
     ```bash
-    sudo nano /etc/init/cluster
+    sudo vim /etc/init/cluster
     ```
 
     ```bash
@@ -234,7 +265,7 @@
     > Create a new file `/home/ubuntu/cluster/server.js`
 
     ```bash
-    sudo nano /home/ubuntu/cluster/server.js
+    sudo vim /home/ubuntu/cluster/server.js
     ```
 
     ```js
@@ -286,7 +317,7 @@
     Hit CTRL-C to stop the server
     ```
 
-    > Now visit <http://12.34.56.78/> (replace with your instance's IP).  If you run into issues, you may need to log into EC2's security groups and open up port 8080.
+    > Now visit <http://12.34.56.78/> (replace with your instance's IP).  If you run into issues, you may need to log into EC2's security groups and open up port 3000.
 
 
 ## Apache Legacy Support
@@ -302,7 +333,7 @@ If you need to support legacy web applications running on PHP/Apache/MySQL, then
 2. Modify the default port from 80 to 8080:
 
     ```bash
-    sudo nano /etc/apache2/ports.conf
+    sudo vim /etc/apache2/ports.conf
     ```
 
     > Edit "/etc/apache2/ports.conf":
@@ -315,7 +346,7 @@ If you need to support legacy web applications running on PHP/Apache/MySQL, then
     ```
 
     ```bash
-    sudo nano /etc/apache2/sites-available/default
+    sudo vim /etc/apache2/sites-available/default
     ```
 
     > Edit "/etc/apache2/sites-available/default":
@@ -335,7 +366,7 @@ If you need to support legacy web applications running on PHP/Apache/MySQL, then
 4. Add a virtual host to `sites.js` (replace "mysite.com" with your domain):
 
     ```bash
-    nano /home/ubuntu/cluster/sites.js
+    vim /home/ubuntu/cluster/sites.js
     ```
 
     ```diff
@@ -349,7 +380,7 @@ If you need to support legacy web applications running on PHP/Apache/MySQL, then
 5. Add a virtual host to `/etc/apache2/sites-available/mysite.com`:
 
     ```bash
-    sudo nano /etc/apache2/sites-available/mysite.com
+    sudo vim /etc/apache2/sites-available/mysite.com
     ```
 
     ```conf
@@ -365,7 +396,7 @@ If you need to support legacy web applications running on PHP/Apache/MySQL, then
 
     ```bash
     mkdir /home/ubuntu/mysite.com
-    nano /home/ubuntu/mysite.com/index.html
+    vim /home/ubuntu/mysite.com/index.html
     ```
 
     ```html
@@ -382,6 +413,7 @@ If you need to support legacy web applications running on PHP/Apache/MySQL, then
 8. Visit <http://mysite.com> to test out the http-proxy with Node to Apache.
 
 
-## Sources
+## Inspiration
 
 * [Feross Aboukhadijeh](http://feross.org/how-to-setup-your-linode/)
+* [Bryan Kennedy](http://plusbryan.com/my-first-5-minutes-on-a-server-or-essential-security-for-linux-servers)
