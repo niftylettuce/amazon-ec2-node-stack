@@ -216,7 +216,7 @@
     ```bash
     git clone https://github.com/joyent/node.git
     cd node
-    git checkout v0.10.1
+    git checkout v0.10.4
     ./configure --openssl-libpath=/usr/lib/ssl
     make
     make test
