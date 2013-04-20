@@ -319,6 +319,12 @@
 
     > Now visit <http://12.34.56.78/> (replace with your instance's IP).  If you run into issues, you may need to log into EC2's security groups and open up port 3000.
 
+10. Optionally you can run the following command to increase the number of sockets that Node can connect to.
+
+    ```bash
+    sudo ulimit -n 999999
+    ```
+
 
 ## Apache Legacy Support
 
