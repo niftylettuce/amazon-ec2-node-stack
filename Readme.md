@@ -317,7 +317,7 @@ If you need to support legacy web applications running on PHP/Apache/MySQL, then
 1. Install dependencies including Apache, PHP, and MySQL.
 
     ```bash
-    sudo apt-get install apache2 php5 libapache2-mod-php5 mysql-server
+    sudo apt-get install apache2 php5 libapache2-mod-php5 mysql-server phpmyadmin
     ```
 
 2. Modify the default port from 80 to 8080:
