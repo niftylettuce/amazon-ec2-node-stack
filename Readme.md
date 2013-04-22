@@ -201,32 +201,13 @@
 
 ## Node.js with HTTP Proxy Configuration
 
+This tutorial assumes that you've already installed Node.
+
 1. Connect over SSH to your EC2 instance (see [Amazon EC2 Configuration](#amazon-ec2-configuration) step #5).
 
     > Note that you may need to add the flag `-p 44444` if you disabled normal SSH access on port 22 in the previous section.
 
-2. Install git dependency packages:
-
-    ```bash
-    sudo apt-get update && sudo apt-get install git-core curl build-essential openssl libssl-dev
-    ```
-
-3. Install node:
-
-    ```bash
-    git clone https://github.com/joyent/node.git
-    cd node
-    git checkout v0.10.4
-    mkdir -p ~/opt/node
-    ./configure --openssl-libpath=/usr/lib/ssl --prefix=~/opt/node
-    make
-    make test
-    make install
-    echo 'export PATH=~/opt/node/bin:${PATH}' >> ~/.bashrc
-    . ~/.bashrc
-    ```
-
-4. Configure upstart:
+2. Configure upstart:
 
     > Create a new file `/etc/init/cluster`
 
@@ -255,7 +236,7 @@
     end script
     ```
 
-5. Install http-proxy:
+3. Install http-proxy:
 
     ```bash
     mkdir /home/ubuntu/cluster
@@ -263,7 +244,7 @@
     npm install --save http-proxy
     ```
 
-6. Setup http-proxy cluster:
+4. Setup http-proxy cluster:
 
     > Create a new file `/home/ubuntu/cluster/server.js`
 
@@ -297,7 +278,7 @@
     }
     ```
 
-7. Add a test virtual host with your EC2's Public IP to a new file `/home/ubuntu/cluster/sites.js`:
+5. Add a test virtual host with your EC2's Public IP to a new file `/home/ubuntu/cluster/sites.js`:
 
     ```js
     module.exports = {
@@ -305,13 +286,13 @@
     }
     ```
 
-8. Start cluster:
+6. Start cluster:
 
     ```bash
     sudo start cluster
     ```
 
-9. Test to ensure that cluster is working properly.
+7. Test to ensure that cluster is working properly.
 
     ```bash
     npm install -g http-server
@@ -322,7 +303,7 @@
 
     > Now visit <http://12.34.56.78/> (replace with your instance's IP).  If you run into issues, you may need to log into EC2's security groups and open up port 3000.
 
-10. Optionally you can run the following command to increase the number of sockets that Node can connect to.
+8. Optionally you can run the following command to increase the number of sockets that Node can connect to.
 
     ```bash
     sudo ulimit -n 999999
