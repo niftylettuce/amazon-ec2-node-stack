@@ -217,10 +217,13 @@
     git clone https://github.com/joyent/node.git
     cd node
     git checkout v0.10.4
-    ./configure --openssl-libpath=/usr/lib/ssl
+    mkdir -p ~/opt/node
+    ./configure --openssl-libpath=/usr/lib/ssl --prefix=~/opt/node
     make
     make test
-    sudo make install
+    make install
+    echo 'export PATH=~/opt/node/bin:${PATH}' >> ~/.bashrc
+    . ~/.bashrc
     ```
 
 4. Configure upstart:
