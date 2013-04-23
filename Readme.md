@@ -303,12 +303,6 @@ This tutorial assumes that you've already installed Node.
 
     > Now visit <http://12.34.56.78/> (replace with your instance's IP).  If you run into issues, you may need to log into EC2's security groups and open up port 3000.
 
-8. Optionally you can run the following command to increase the number of sockets that Node can connect to.
-
-    ```bash
-    sudo ulimit -n 999999
-    ```
-
 
 ## Apache Legacy Support
 
@@ -349,7 +343,7 @@ If you need to support legacy web applications running on PHP/Apache/MySQL, then
 3. Reload the Apache configuration and restart the server.
 
     ```bash
-    sudo /etc/init.d/apache2 reload
+    sudo service apache2 reload
     sudo service apache2 restart
     ```
 
@@ -397,10 +391,17 @@ If you need to support legacy web applications running on PHP/Apache/MySQL, then
 
     ```bash
     sudo a2ensite mysite.com
-    sudo /etc/init.d/apache2 reload
+    sudo service apache2 reload
     ```
 
-8. Visit <http://mysite.com> to test out the http-proxy with Node to Apache.
+8. Enable mod rewrite.
+
+    ```bash
+    sudo a2enmod rewrite
+    sudo service apache2 restart
+    ```
+
+9. Visit <http://mysite.com> to test out the http-proxy with Node to Apache.
 
 
 ## Inspiration
