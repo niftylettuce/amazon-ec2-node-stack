@@ -114,6 +114,8 @@
     +PermitRootLogin no
     -PermitRootLogin yes
     StrictModes yes
+    -#PasswordAuthentication yes
+    +PasswordAuthentication no
     ```
 
     ```bash
