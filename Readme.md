@@ -211,10 +211,10 @@ This tutorial assumes that you've already installed Node.
 
 2. Configure upstart:
 
-    > Create a new file `/etc/init/cluster`
+    > Create a new file `/etc/init/cluster.conf`
 
     ```bash
-    sudo vim /etc/init/cluster
+    sudo vim /etc/init/cluster.conf
     ```
 
     ```bash
@@ -271,8 +271,12 @@ This tutorial assumes that you've already installed Node.
       }
       cluster.on('exit', clusterExit)
     } else {
-      var httpServer = httpProxy.createServer(options)
-      httpServer.listen(80)
+        var proxy = httpProxy.createProxy()
+        require('http').createServer(function(req, res) {
+            proxy.web(req, res, {
+                target: sites[req.headers.host]
+            })
+        }).listen(80)
     }
 
     function clusterExit(worker, code, signal) {
@@ -284,7 +288,7 @@ This tutorial assumes that you've already installed Node.
 
     ```js
     module.exports = {
-      "12.34.56.78": "127.0.0.1:3000"
+      "12.34.56.78": "http://127.0.0.1:3000"
     }
     ```
 
